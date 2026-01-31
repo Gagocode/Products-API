@@ -2,9 +2,9 @@
 from flask import jsonify, Blueprint, request
 
 #Depency Imports
-from data.schema import DB_PATH
-from repository.products_repository import ProductRepository
+from services.repository_service import create_product_service, list_product_service, get_product_or_404_service
 from services.product_route_service import validate_route_payload
+from exceptions.product_exceptions import ProductNotFoundError
 
 
 post_product_bp = Blueprint("post_product_route", __name__)
@@ -18,8 +18,7 @@ def post_product_route():
     payload = request.get_json()
     product = validate_route_payload(payload)
     
-    repo = ProductRepository(DB_PATH)
-    repo.create(product)
+    create_product_service(product)
     
     return jsonify({
         "code": 201,
@@ -30,8 +29,7 @@ def post_product_route():
 @get_products_all_bp.route("/api/v1/products", methods=['GET'])
 def get_products_all():
     
-    repo = ProductRepository(DB_PATH)
-    products_list = repo.find_all()
+    products_list = list_product_service()
 
     return jsonify({
         "code": 200,
@@ -49,8 +47,13 @@ def get_products_all():
 @get_product_id_bp.route(f"/api/v1/products/<product_id>", methods=['GET'])
 def get_products_id(product_id):
 
-    repo = ProductRepository(DB_PATH)
-    product = repo.find_by_id(product_id)
+    try:
+        product = get_product_or_404_service(product_id)
+    except ProductNotFoundError:
+        return jsonify({
+        "code": 404,
+        "description": f"the product with {product_id} id is not found.",
+        }),404
 
     return jsonify({
         "code": 200,
@@ -65,6 +68,7 @@ def get_products_id(product_id):
         }for product in product]
     }),200
 
-##FAZER CONDICAO SE NAO ACHAR O PRODUCTO
+
+
 
 
