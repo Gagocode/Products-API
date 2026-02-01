@@ -15,9 +15,16 @@ def get_product_or_404_service(id):
     
     return product
     
-def list_product_service():
+def list_product_service(active_params: bool | None):
+    
     repo = ProductRepository(DB_PATH)
-    products_list = repo.find_all()
+    
+    active = None
+    if active_params is not None:
+        active = active_params.lower() == "true"
+        products_list = repo.find_active(active)
+    else:
+        products_list = repo.find_all()
 
     return products_list
 

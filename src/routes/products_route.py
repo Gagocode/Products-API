@@ -29,7 +29,8 @@ def post_product_route():
 @get_products_all_bp.route("/api/v1/products", methods=['GET'])
 def get_products_all():
     
-    products_list = list_product_service()
+    query_params = request.args.get("active")
+    products_list = list_product_service(query_params)
 
     return jsonify({
         "code": 200,
@@ -67,8 +68,4 @@ def get_products_id(product_id):
             "active": product["active"]
         }for product in product]
     }),200
-
-
-
-
 
