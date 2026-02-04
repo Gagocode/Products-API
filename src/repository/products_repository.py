@@ -70,7 +70,7 @@ class ProductRepository:
                 CURSOR = CONNECT.cursor()
                 CURSOR.execute(
                         '''
-                                UPDATES PRODUCTS SET 
+                                UPDATE PRODUCTS SET 
                                         NAME = ?,
                                         PRICE = ?,
                                         QUANTITY = ?,
