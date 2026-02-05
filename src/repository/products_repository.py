@@ -75,9 +75,8 @@ class ProductRepository:
                                         PRICE = ?,
                                         QUANTITY = ?,
                                         CATEGORY = ?,
-                                        ACTIVE = ?
                                 WHERE PRODUCT_ID = ?
-                        ''',(product.name, product.price, product.quantity, product.category, product.active, product_id) 
+                        ''',(product.name, product.price, product.quantity, product.category, product_id) 
                 )
 
     def deactivate(self, product_id):
@@ -85,8 +84,8 @@ class ProductRepository:
                 CURSOR = CONNECT.cursor()
                 CURSOR.execute(
                         '''
-                                UPDATE PRODUCT SET
-                                        ACTIVE = "false"
+                                UPDATE PRODUCTS SET
+                                        ACTIVE = 0
                                 WHERE PRODUCT_ID = ?
                         ''', (product_id,)
                 )

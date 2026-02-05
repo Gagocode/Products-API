@@ -6,9 +6,9 @@ def create_product_service(product):
     repo = ProductRepository(DB_PATH)
     repo.create(product)
 
-def get_product_or_404_service(id):
+def get_product_or_404_service(product_id):
     repo = ProductRepository(DB_PATH)
-    product = repo.find_by_id(id)
+    product = repo.find_by_id(product_id)
 
     if not product:
         raise ProductNotFoundError()
@@ -28,4 +28,8 @@ def list_product_service(active_params: bool | None):
 
     return products_list
 
+def deactivate_product_service(product_id):
+    
+    repo = ProductRepository(DB_PATH)
+    repo.deactivate(product_id)
        

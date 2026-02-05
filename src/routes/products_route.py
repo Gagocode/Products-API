@@ -2,7 +2,7 @@
 from flask import jsonify, Blueprint, request
 
 #Depency Imports
-from services.repository_service import create_product_service, list_product_service, get_product_or_404_service
+from services.repository_service import create_product_service, list_product_service, get_product_or_404_service, deactivate_product_service
 from services.product_route_service import validate_route_payload
 from exceptions.product_exceptions import ProductNotFoundError
 
@@ -11,6 +11,7 @@ post_product_bp = Blueprint("post_product_route", __name__)
 get_products_all_bp = Blueprint("get_products_all", __name__)
 get_product_id_bp = Blueprint("get_products_id", __name__)
 get_products_active_bp = Blueprint("get_products_active", __name__)
+deactivate_product_bp = Blueprint("deactivate_product", __name__)
 
 @post_product_bp.route('/api/v1/products', methods=['POST'])
 def post_product_route():
@@ -69,3 +70,21 @@ def get_products_id(product_id):
         }for product in product]
     }),200
 
+@deactivate_product_bp.route("/api/v1/products/<product_id>/deactivate", methods=['PATCH'])
+def deactivate_product(product_id):
+    
+    try:
+        get_product_or_404_service(product_id)
+    except ProductNotFoundError:
+        return jsonify({
+        "code": 404,
+        "description": f"The product with {product_id} id is not found.",
+        }),404
+    
+    deactivate_product_service(product_id)
+
+    return jsonify({
+        "code": 201,
+        "data": "None",
+        "message": f"The product with {product_id} has been deactived."
+    }),201
